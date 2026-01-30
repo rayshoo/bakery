@@ -46,7 +46,7 @@ var taskColors = []string{
 	"\033[95m",
 }
 
-// AgentResult 는 빌드 결과를 controller에 전송하기 위한 구조체 입니다.
+// AgentResult holds the build result sent to the controller.
 type AgentResult struct {
 	TaskID      string `json:"taskId"`
 	Arch        string `json:"arch"`
@@ -62,7 +62,7 @@ func getenv(key, def string) string {
 	return def
 }
 
-// getTaskColor 는 taskID에 해당하는 터미널 색상 코드를 반환합니다.
+// getTaskColor returns the terminal color code for a task ID.
 func getTaskColor(taskID string) string {
 	if colorIdx := os.Getenv("TASK_COLOR_INDEX"); colorIdx != "" {
 		if idx, err := strconv.Atoi(colorIdx); err == nil {

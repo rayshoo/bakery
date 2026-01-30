@@ -29,8 +29,8 @@ type TaskResult struct {
 	Error       string
 }
 
-// BuildState 는 단일 빌드의 상태를 관리하는 구조체입니다.
-// ID 필드는 생성 후 변경되지 않으며, 로그 스트리밍과 결과 수집에 사용됩니다.
+// BuildState manages the state of a single build.
+// The ID field is immutable after creation and is used for log streaming and result collection.
 type BuildState struct {
 	ID     string
 	Logs   chan LogEntry
@@ -56,7 +56,7 @@ type BuildState struct {
 	HasDuplicateArch  bool
 }
 
-// Store 는 빌드 상태들을 관리하는 저장소입니다.
+// Store is a thread-safe store for build states.
 type Store struct {
 	mu     sync.RWMutex
 	states map[string]*BuildState
@@ -126,7 +126,7 @@ func (s *Store) ListIDs() []string {
 	return ids
 }
 
-// NewBuildState 는 새로운 빌드 상태를 생성합니다.
+// NewBuildState creates a new build state.
 func NewBuildState(id string, totalTasks int, isSingleArch bool, globalDest string) *BuildState {
 	if strings.TrimSpace(id) == "" {
 		panic("NewBuildState: ID cannot be empty")
@@ -241,7 +241,7 @@ func (s *BuildState) GetResults() map[string]TaskResult {
 	return results
 }
 
-// logTaskSummary 는 task 결과 요약을 로그에 남깁니다.
+// logTaskSummary logs a summary of task results.
 func (s *BuildState) logTaskSummary() {
 	s.Mu.RLock()
 	results := make(map[string]TaskResult, len(s.Results))
@@ -291,7 +291,7 @@ func (s *BuildState) logTaskSummary() {
 	}
 }
 
-// Finish 는 빌드를 종료하고 로그 채널을 닫습니다.
+// Finish finalizes the build and closes the log channel.
 func (s *BuildState) Finish(err error) {
 	s.Mu.Lock()
 

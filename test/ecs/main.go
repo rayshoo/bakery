@@ -11,12 +11,12 @@ import (
 	ectypes "github.com/aws/aws-sdk-go-v2/service/ecs/types"
 )
 
-// ===== 여기 환경 맞게 수정 =====
+// ===== Adjust these values for your environment =====
 const (
 	region      = "ap-northeast-2"
-	clusterName = "test" // 이미 존재하는 ECS 클러스터 이름
+	clusterName = "test" // Name of an existing ECS cluster
 
-	taskFamily    = "curl-routing-test" // 새로 만들 태스크 패밀리 이름
+	taskFamily    = "curl-routing-test" // Task family name to create
 	containerName = "curl"
 
 	executionRoleArn = "arn:aws:iam::<account-id>:role/<execution-role-name>"
@@ -28,14 +28,14 @@ const (
 	// CloudWatch Logs
 	logGroupName = "/ecs/curl-routing-test"
 
-	// 실제로 라우팅 테스트할 URL
+	// URL to test routing against
 	testURL = "https://<host>"
 )
 
 func main() {
 	ctx := context.Background()
 
-	// 1. AWS 설정 로드
+	// 1. Load AWS config
 	cfg, err := config.LoadDefaultConfig(ctx, config.WithRegion(region))
 	if err != nil {
 		log.Fatalf("failed to load AWS config: %v", err)
@@ -43,30 +43,30 @@ func main() {
 
 	ecsClient := ecs.NewFromConfig(cfg)
 
-	// 2. Fargate TaskDefinition 등록 (curl 전용)
+	// 2. Register Fargate TaskDefinition (curl-only)
 	taskDefArn, err := registerCurlTaskDef(ctx, ecsClient)
 	if err != nil {
 		log.Fatalf("failed to register task definition: %v", err)
 	}
 	log.Printf("registered task definition: %s\n", aws.ToString(taskDefArn))
 
-	// 3. Fargate 태스크 한 개 실행 (awsvpc 네트워크 모드)
+	// 3. Run a single Fargate task (awsvpc network mode)
 	if err := runCurlTask(ctx, ecsClient, aws.ToString(taskDefArn)); err != nil {
 		log.Fatalf("failed to run task: %v", err)
 	}
 
-	log.Println("RunTask 호출 완료. ECS 콘솔 / CloudWatch Logs에서 curl 결과를 확인하세요.")
+	log.Println("RunTask invoked. Check the ECS console / CloudWatch Logs for curl results.")
 }
 
-// curl을 실행하는 Fargate TaskDefinition 생성
+// registerCurlTaskDef creates a Fargate TaskDefinition that runs curl.
 func registerCurlTaskDef(ctx context.Context, ecsClient *ecs.Client) (*string, error) {
-	// Fargate에서 쓸 수 있는 CPU/Memory 조합 예시 (0.25 vCPU / 0.5GB)
+	// Valid Fargate CPU/Memory combination (0.25 vCPU / 0.5GB)
 	cpu := "256"
 	memory := "512"
 
-	// 컨테이너가 실행할 커맨드:
+	// Container command:
 	// - curl -v <testURL>
-	// - 600초 sleep 해서 로그 확인 시간 확보
+	// - sleep 600s to allow time for log inspection
 	command := []string{
 		"sh", "-c",
 		fmt.Sprintf("echo '=== curl test start ===' && curl -v %s && echo '=== curl done ===' && sleep 600", testURL),
@@ -93,14 +93,14 @@ func registerCurlTaskDef(ctx context.Context, ecsClient *ecs.Client) (*string, e
 		TaskRoleArn:      aws.String(taskRoleArn),
 
 		RuntimePlatform: &ectypes.RuntimePlatform{
-			CpuArchitecture:       ectypes.CPUArchitectureX8664, // curl 이미지는 멀티아치라 이걸로 충분
+			CpuArchitecture:       ectypes.CPUArchitectureX8664, // curl image is multi-arch, x86_64 is sufficient
 			OperatingSystemFamily: ectypes.OSFamilyLinux,
 		},
 
 		ContainerDefinitions: []ectypes.ContainerDefinition{
 			{
 				Name:             aws.String(containerName),
-				Image:            aws.String("curlimages/curl:8.8.0"), // 경량 curl 이미지
+				Image:            aws.String("curlimages/curl:8.8.0"), // Lightweight curl image
 				Essential:        aws.Bool(true),
 				Command:          command,
 				LogConfiguration: logConfig,
@@ -116,7 +116,7 @@ func registerCurlTaskDef(ctx context.Context, ecsClient *ecs.Client) (*string, e
 	return out.TaskDefinition.TaskDefinitionArn, nil
 }
 
-// 위 TaskDefinition으로 Fargate Task 실행
+// runCurlTask runs a Fargate task using the given TaskDefinition.
 func runCurlTask(ctx context.Context, ecsClient *ecs.Client, taskDefArn string) error {
 	input := &ecs.RunTaskInput{
 		Cluster:         aws.String(clusterName),
@@ -133,7 +133,7 @@ func runCurlTask(ctx context.Context, ecsClient *ecs.Client, taskDefArn string) 
 				SecurityGroups: []string{
 					securityGroup1,
 				},
-				AssignPublicIp: ectypes.AssignPublicIpDisabled, // NAT 경유 프라이빗 서브넷 테스트
+				AssignPublicIp: ectypes.AssignPublicIpDisabled, // Test via NAT in private subnet
 			},
 		},
 	}

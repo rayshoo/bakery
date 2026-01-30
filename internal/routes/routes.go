@@ -28,7 +28,7 @@ type AgentResult struct {
 	Error       string `json:"error,omitempty"`
 }
 
-// Setup 은 Fiber 앱에 빌드 관련 라우트를 등록합니다.
+// Setup registers build-related routes on the Fiber app.
 func Setup(app *fiber.App, deps Dependencies) {
 
 	app.Get("/", func(c *fiber.Ctx) error {

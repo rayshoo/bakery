@@ -14,10 +14,10 @@ type K8sServerConfig struct {
 	Tolerations        []TolerationItem  `yaml:"tolerations"`
 }
 
-// LoadK8sServerConfig - 서버 측 K8s 설정 파일 읽기
+// LoadK8sServerConfig loads the server-side K8s configuration file.
 func LoadK8sServerConfig(path string) (*K8sServerConfig, error) {
 	if path == "" {
-		return nil, nil // K8s 설정 없음 (ECS만 사용)
+		return nil, nil // No K8s config (ECS-only mode)
 	}
 
 	data, err := os.ReadFile(path)

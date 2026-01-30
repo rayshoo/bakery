@@ -35,8 +35,8 @@ import (
 
 var version = "dev"
 
-// ServerReadiness 는 서버의 준비 상태를 관리하는 구조체입니다.
-// Kubernetes readiness probe 에서 사용됩니다.
+// ServerReadiness manages the server's readiness state.
+// Used by Kubernetes readiness probes.
 type ServerReadiness struct {
 	ready bool
 }
@@ -209,8 +209,8 @@ func main() {
 	log.Println("[main] server gracefully stopped")
 }
 
-// cleanupECSTaskDefinitions 는 CLEANUP_ECS_TASK_DEFINITIONS 환경변수가 true 일 때
-// 서버 시작 시 기존 ECS task definition 들을 정리(deregister)합니다.
+// cleanupECSTaskDefinitions deregisters existing ECS task definitions at server startup
+// when CLEANUP_ECS_TASK_DEFINITIONS is set to "true".
 func cleanupECSTaskDefinitions(ctx context.Context, ecsClient *ecs.Client) error {
 	log.Println("[cleanup] Starting ECS task definition cleanup...")
 
@@ -265,7 +265,7 @@ func cleanupECSTaskDefinitions(ctx context.Context, ecsClient *ecs.Client) error
 	return nil
 }
 
-// getenv 는 환경변수를 조회하고, 값이 없으면 기본값을 반환합니다.
+// getenv returns the value of an environment variable, or the default if not set.
 func getenv(k, def string) string {
 	v := os.Getenv(k)
 	if v == "" {
@@ -274,14 +274,14 @@ func getenv(k, def string) string {
 	return v
 }
 
-// RegistryAuth 는 private registry 인증 정보를 담는 구조체입니다.
+// RegistryAuth holds private registry authentication credentials.
 type RegistryAuth struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
 
-// ensureRegistrySecret 는 ECS agent 이미지 pull 에 필요한 private registry 인증 정보를
-// AWS Secrets Manager 에 생성하거나 기존 secret ARN 을 반환합니다.
+// ensureRegistrySecret creates or retrieves a private registry secret in AWS Secrets Manager
+// for pulling the ECS agent image.
 func ensureRegistrySecret(ctx context.Context, sm *secretsmanager.Client) (string, error) {
 	secretArn := os.Getenv("AGENT_IMAGE_SECRET_ARN")
 	name := os.Getenv("AGENT_IMAGE_SECRET_NAME")

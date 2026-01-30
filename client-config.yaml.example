@@ -1,23 +1,23 @@
 global:
   # ecs or k8s
   platform: ecs
-  
+
   # amd64 or arm64
   arch: amd64
-  
-  # ecs or k8s 로 띄울 컨테이너의 환경변수
+
+  # Environment variables for the container launched on ecs or k8s
   env:
     foo: bar
 
-  # ecs 로 kaniko 컨테이너를 띄웠을때 kaniko 를 실행하기 전 실행할 스크립트
+  # Script to run before executing kaniko when the kaniko container is launched on ecs
   pre-script: |
     echo 'this is original pre script' > pre.txt
 
-  # kaniko 빌드 성공 이후에 실행할 스크립트. 빌드 실패했을 경우 해당 스크립트 실행 없이 바로 종료.
+  # Script to run after a successful kaniko build. Skipped on build failure.
   post-script: |
     echo 'this is post script' > post.txt
 
-  # 여기 명시한 secret 은 kaniko 실행 전 /kaniko/.docker/config.json 에 docker credential 파일로 저장.
+  # Credentials listed here are saved to /kaniko/.docker/config.json before kaniko runs.
   kaniko-credentials:
   - registry: registry.example.com
     username: user
@@ -27,9 +27,9 @@ global:
     password: password
 
   kaniko:
-    # 서버쪽 기본값이긴 하나 명시해서 override 가능
+    # Server default, but can be explicitly overridden
     context-path: /workspace/src
-    # 서버쪽 기본값이긴 하나 명시해서 override 가능
+    # Server default, but can be explicitly overridden
     dockerfile: Dockerfile
     build-args:
       BUILD_BASE_IMAGE_NAME: golang
@@ -55,35 +55,35 @@ global:
 bake:
 - arch: amd64
 
-  # 여기 쓰면 위의 global env + 해당 env, 같은 key  있으면 value override
+  # Merged with global env; duplicate keys are overridden by bake values
   env:
     foo1: bar1
 
   kaniko:
-    # container name 은 생략 가능. 기본값 kaniko
+    # container-name is optional, defaults to kaniko
     # container-name: kaniko
 
-    # 여기 쓰면 위의 global.kaniko.context-path override
+    # Overrides global.kaniko.context-path
     # context-path: /workspace/src
 
-    # 여기 쓰면 위의 global.kaniko.dockerfile override
+    # Overrides global.kaniko.dockerfile
     # dockerfile: Dockerfile
 
-    # 이 밖에 global.kaniko 옵션 모두 override 가능
+    # All other global.kaniko options can be overridden here as well
 
-    # 여기 쓰면 위의 global.kaniko.build-args + 해당 build-args, 같은 key 있으면 value override
+    # Merged with global.kaniko.build-args; duplicate keys are overridden by bake values
     build-args:
       BUILD_PLATFORM: amd64
 
 - arch: arm64
-  # 여기 쓰면 global.pre-script override
+  # Overrides global.pre-script
   pre-script: |
     echo 'this is overrided pre script' > pre.txt
 
-  # 여기 쓰면 global.post-script override.
+  # Overrides global.post-script
   post-script: ''
 
-  # 여기 쓰면 위의 global.kaniko-credentials override
+  # Overrides global.kaniko-credentials entirely (all-or-nothing)
   kaniko-credentials:
   - registry: registry.example.com
     username: user
@@ -94,27 +94,27 @@ bake:
 
   kaniko:
     image:
-      # 명시할 경우 global.kaniko.image.secret override. 빈 배열일 경우 docker credential 저장 없이 아무것도 안함
+      # Overrides global.kaniko.image.secret. An empty array disables docker credential storage.
       secret:
       - registry: registry.example.com
         username: user
         password: password
 
-    # container name 은 생략 가능. 기본값 kaniko
+    # container-name is optional, defaults to kaniko
     container-name: kaniko-arm64
 
-    # 여기 쓰면 위의 global.kaniko.context-path override
+    # Overrides global.kaniko.context-path
     context-path: /workspace/src
 
-    # 여기 쓰면 위의 global.kaniko.dockerfile override
+    # Overrides global.kaniko.dockerfile
     dockerfile: Dockerfile.arm64
 
-    # 이 밖에 global.kaniko 옵션 모두 override 가능
+    # All other global.kaniko options can be overridden here as well
 
-    # 여기 쓰면 위의 global.env + 해당 env, 같은 key  있으면 value override
+    # Merged with global.env; duplicate keys are overridden by bake values
     env:
       foo2: bar2
 
-    # 여기 쓰면 위의 global.kaniko.build-args + 해당 build-args, 같은 key 있으면 value override
+    # Merged with global.kaniko.build-args; duplicate keys are overridden by bake values
     build-args:
       BUILD_PLATFORM: arm64

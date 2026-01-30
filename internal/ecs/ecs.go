@@ -21,7 +21,7 @@ import (
 	ecstypes "github.com/aws/aws-sdk-go-v2/service/ecs/types"
 )
 
-// ECSExecutor 는 AWS ECS Fargate 에서 빌드 태스크를 실행하는 executor 입니다.
+// ECSExecutor runs build tasks on AWS ECS Fargate.
 type ECSExecutor struct {
 	Client            *awsecs.Client
 	ClusterName       string
@@ -38,7 +38,7 @@ type ECSExecutor struct {
 	taskDefCache map[string]bool
 }
 
-// NewECSExecutor 는 ECSExecutor 인스턴스를 생성합니다.
+// NewECSExecutor creates a new ECSExecutor instance.
 func NewECSExecutor(
 	client *awsecs.Client,
 	cluster string,
@@ -66,7 +66,7 @@ func NewECSExecutor(
 	}
 }
 
-// RunTask 는 지정된 아키텍처로 ECS 태스크를 실행합니다.
+// RunTask runs an ECS task for the specified architecture.
 func (e *ECSExecutor) RunTask(
 	ctx context.Context,
 	st *state.BuildState,
@@ -110,8 +110,8 @@ func validateECSResources(cpu, memory string) error {
 	return fmt.Errorf("invalid ECS CPU/Memory combination: CPU=%s Memory=%s", cpu, memory)
 }
 
-// EnsureTaskDefinitionForArch 는 지정된 아키텍처와 리소스 설정에 맞는 Task Definition 이 존재하는지 확인하고,
-// 없으면 새로 생성합니다. 동일 family 에 대한 동시 생성을 방지하기 위해 mutex 로 동기화합니다.
+// EnsureTaskDefinitionForArch checks if a Task Definition exists for the given architecture
+// and resource settings, creating one if needed. Uses a mutex to prevent concurrent creation.
 func (e *ECSExecutor) EnsureTaskDefinitionForArch(ctx context.Context, arch string, cpu string, memory string) (string, error) {
 	if cpu == "" {
 		cpu = "256"
@@ -215,7 +215,7 @@ func (e *ECSExecutor) EnsureTaskDefinitionForArch(ctx context.Context, arch stri
 	return family, nil
 }
 
-// RunTaskForArch 는 특정 아키텍처에 대한 ECS 태스크를 실행하고 완료될 때까지 대기합니다.
+// RunTaskForArch runs an ECS task for a specific architecture and waits for completion.
 func (e *ECSExecutor) RunTaskForArch(
 	ctx context.Context,
 	st *state.BuildState,
@@ -548,8 +548,8 @@ func (e *ECSExecutor) checkTaskExitCode(
 	return err
 }
 
-// StreamTaskLogs 는 ECS 태스크의 로그를 스트리밍합니다.
-// 현재는 ingest 기반 스트리밍만 사용하므로 비어있음.
+// StreamTaskLogs streams logs from an ECS task.
+// Currently empty as only ingest-based streaming is used.
 func (e *ECSExecutor) StreamTaskLogs(
 	ctx context.Context,
 	st *state.BuildState,
@@ -585,12 +585,12 @@ func lastIndexByte(s string, c byte) int {
 	return -1
 }
 
-// DockerConfig 는 kaniko 에서 사용할 Docker registry 인증 설정 구조체입니다.
+// DockerConfig holds Docker registry auth configuration for kaniko.
 type DockerConfig struct {
 	Auths map[string]DockerAuth `json:"auths"`
 }
 
-// DockerAuth 는 Docker registry 인증 정보를 담는 구조체입니다.
+// DockerAuth holds Docker registry authentication credentials.
 type DockerAuth struct {
 	Auth string `json:"auth"`
 }
@@ -620,8 +620,8 @@ func getenv(k, def string) string {
 	return v
 }
 
-// getTaskColorIndex 는 taskID에 해당하는 색상 인덱스를 문자열로 반환합니다.
-// amd64 계열은 짝수, arm64 계열은 홀수 인덱스를 사용합니다.
+// getTaskColorIndex returns the terminal color index for a task ID.
+// amd64 tasks use even indices, arm64 tasks use odd indices.
 func getTaskColorIndex(taskID string) string {
 	if taskID == "amd64" {
 		return "0"

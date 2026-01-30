@@ -17,7 +17,7 @@ import (
 	"github.com/google/uuid"
 )
 
-// Executor 는 빌드 태스크를 실행하는 인터페이스입니다.
+// Executor is the interface for running build tasks.
 type Executor interface {
 	RunTask(
 		ctx context.Context,
@@ -41,7 +41,7 @@ type Deps struct {
 	S3PathStyle   bool
 }
 
-// Orchestrator 는 빌드 요청을 받아 여러 executor 에 태스크를 분배하고 결과를 수집합니다.
+// Orchestrator distributes build tasks across executors and collects results.
 type Orchestrator struct {
 	store         *state.Store
 	ecs           Executor
@@ -67,7 +67,7 @@ func New(d Deps) *Orchestrator {
 	}
 }
 
-// StartBuild 는 빌드 요청을 받아 태스크를 시작하고 BuildState 를 반환합니다.
+// StartBuild accepts a build request, starts tasks, and returns a BuildState.
 func (o *Orchestrator) StartBuild(
 	yamlBytes []byte,
 	contextBucket string,

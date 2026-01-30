@@ -42,7 +42,7 @@ type RegistryCredential struct {
 	Password string `yaml:"password"`
 }
 
-// KanikoConfig 는 Global 섹션의 Kaniko 설정을 담는 구조체입니다.
+// KanikoConfig holds Kaniko settings for the global section.
 type KanikoConfig struct {
 	ContextPath string            `yaml:"context-path"`
 	Dockerfile  string            `yaml:"dockerfile"`
@@ -68,7 +68,7 @@ type KanikoConfig struct {
 	ExtraFlags string   `yaml:"extra-flags,omitempty"`
 }
 
-// KanikoOverride 는 Bake 섹션에서 Global 설정을 오버라이드하기 위한 구조체입니다.
+// KanikoOverride holds per-bake overrides for global Kaniko settings.
 type KanikoOverride struct {
 	ContextPath *string           `yaml:"context-path"`
 	Dockerfile  *string           `yaml:"dockerfile"`
@@ -110,7 +110,7 @@ type BuildConfig struct {
 	Bake   []BakeConfig `yaml:"bake"`
 }
 
-// EffectiveConfig 는 Global 과 Bake 설정을 병합한 최종 실행 설정입니다.
+// EffectiveConfig is the final merged configuration from global and bake sections.
 type EffectiveConfig struct {
 	Platform string
 	Arch     string
@@ -153,7 +153,7 @@ func UnmarshalYAML(b []byte, out *BuildConfig) error {
 	return nil
 }
 
-// BuildEffectiveList 는 BuildConfig 를 파싱하여 각 Bake 항목에 대한 EffectiveConfig 목록을 생성합니다.
+// BuildEffectiveList parses a BuildConfig and produces an EffectiveConfig for each bake entry.
 func BuildEffectiveList(cfg *BuildConfig) ([]EffectiveConfig, error) {
 	if cfg == nil {
 		return nil, fmt.Errorf("nil config")

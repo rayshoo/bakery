@@ -15,14 +15,14 @@ import (
 	"github.com/google/go-containerregistry/pkg/v1/types"
 )
 
-// PlatformImage 는 특정 아키텍처의 이미지 정보를 담는 구조체입니다.
+// PlatformImage holds image information for a specific architecture.
 type PlatformImage struct {
 	Arch   string
 	Image  string
 	Digest string
 }
 
-// CreateManifestList 는 여러 아키텍처 이미지를 묶어 multi-arch manifest list 를 생성하고 registry 에 push 합니다.
+// CreateManifestList creates a multi-arch manifest list from platform images and pushes it to the registry.
 func CreateManifestList(
 	ctx context.Context,
 	st *state.BuildState,
@@ -88,7 +88,7 @@ func CreateManifestList(
 	return nil
 }
 
-// getPlatformForArch 는 아키텍처 문자열을 v1.Platform 구조체로 변환합니다.
+// getPlatformForArch converts an architecture string to a v1.Platform struct.
 func getPlatformForArch(arch string) (*v1.Platform, error) {
 	switch arch {
 	case "amd64":

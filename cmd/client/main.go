@@ -218,7 +218,7 @@ type ServiceBuildConfig struct {
 	Config      BuildConfig
 }
 
-// interpolateCompose 는 compose 환경 변수 보간을 적용합니다.
+// interpolateCompose applies environment variable interpolation to a compose file.
 func interpolateCompose(composeBytes []byte) ([]byte, error) {
 	var raw map[string]interface{}
 	if err := yaml.Unmarshal(composeBytes, &raw); err != nil {
@@ -244,7 +244,7 @@ func interpolateCompose(composeBytes []byte) ([]byte, error) {
 	return out, nil
 }
 
-// mergeComposeToConfig 는 docker-compose.yaml과 base config를 병합하여 서비스별 빌드 설정을 생성합니다.
+// mergeComposeToConfig merges a docker-compose.yaml with a base config to produce per-service build configurations.
 func mergeComposeToConfig(baseConfig *BuildConfig, composePath string, services []string) ([]ServiceBuildConfig, error) {
 	composeBytes, err := os.ReadFile(composePath)
 	if err != nil {

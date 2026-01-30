@@ -23,7 +23,7 @@ import (
 	"k8s.io/client-go/kubernetes"
 )
 
-// K8sExecutor 는 Kubernetes 에서 빌드 Job 을 실행하는 executor 입니다.
+// K8sExecutor runs build jobs on Kubernetes.
 type K8sExecutor struct {
 	Client        *kubernetes.Clientset
 	Namespace     string
@@ -32,7 +32,7 @@ type K8sExecutor struct {
 	K8sConfig     *config.K8sServerConfig
 }
 
-// NewK8sExecutor 는 K8sExecutor 인스턴스를 생성합니다.
+// NewK8sExecutor creates a new K8sExecutor instance.
 func NewK8sExecutor(
 	client *kubernetes.Clientset,
 	namespace string,
@@ -49,7 +49,7 @@ func NewK8sExecutor(
 	}
 }
 
-// RunTask 는 Kubernetes Job 을 생성하여 빌드 태스크를 실행합니다.
+// RunTask creates a Kubernetes Job to run a build task.
 func (k *K8sExecutor) RunTask(
 	ctx context.Context,
 	st *state.BuildState,
@@ -378,8 +378,8 @@ func (k *K8sExecutor) waitJobCompletion(
 	}
 }
 
-// getTaskColorIndex 는 taskID에 해당하는 색상 인덱스를 문자열로 반환합니다.
-// amd64 계열은 짝수, arm64 계열은 홀수 인덱스를 사용합니다.
+// getTaskColorIndex returns the terminal color index for a task ID.
+// amd64 tasks use even indices, arm64 tasks use odd indices.
 func getTaskColorIndex(taskID string) string {
 	if taskID == "amd64" {
 		return "0"
