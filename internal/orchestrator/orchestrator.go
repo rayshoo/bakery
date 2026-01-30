@@ -1,10 +1,6 @@
 package orchestrator
 
 import (
-	"github.com/rayshoo/bakery/internal/config"
-	"github.com/rayshoo/bakery/internal/ecs"
-	"github.com/rayshoo/bakery/internal/registry"
-	"github.com/rayshoo/bakery/internal/state"
 	"context"
 	"crypto/rand"
 	"encoding/hex"
@@ -12,6 +8,11 @@ import (
 	"os"
 	"sync"
 	"time"
+
+	"github.com/rayshoo/bakery/internal/config"
+	"github.com/rayshoo/bakery/internal/ecs"
+	"github.com/rayshoo/bakery/internal/registry"
+	"github.com/rayshoo/bakery/internal/state"
 
 	"github.com/google/uuid"
 )

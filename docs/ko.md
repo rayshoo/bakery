@@ -270,7 +270,7 @@ ECS_SUBNETS=subnet-xxx,subnet-yyy
 ECS_SECURITY_GROUPS=sg-xxx
 ECS_EXEC_ROLE_ARN=arn:aws:iam::<account-id>:role/build-agent-execution
 ECS_TASK_ROLE_ARN=arn:aws:iam::<account-id>:role/build-agent-task
-AGENT_IMAGE=docker.io/rayshoo/bakery/agent:v1.0.0
+AGENT_IMAGE=docker.io/rayshoo/bakery-agent:v1.0.0
 CLEANUP_ECS_TASK_DEFINITIONS=true
 ```
 

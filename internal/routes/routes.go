@@ -2,14 +2,15 @@ package routes
 
 import (
 	"bufio"
-	"github.com/rayshoo/bakery/internal/orchestrator"
-	"github.com/rayshoo/bakery/internal/state"
 	"bytes"
 	"encoding/json"
 	"fmt"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/rayshoo/bakery/internal/orchestrator"
+	"github.com/rayshoo/bakery/internal/state"
 
 	"github.com/gofiber/fiber/v2"
 )

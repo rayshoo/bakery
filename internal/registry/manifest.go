@@ -1,9 +1,10 @@
 package registry
 
 import (
-	"github.com/rayshoo/bakery/internal/state"
 	"context"
 	"fmt"
+
+	"github.com/rayshoo/bakery/internal/state"
 
 	"github.com/google/go-containerregistry/pkg/authn"
 	"github.com/google/go-containerregistry/pkg/name"

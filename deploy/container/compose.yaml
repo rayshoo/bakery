@@ -12,7 +12,7 @@ services:
         platforms:
         - linux/amd64
         - linux/arm64
-    image: ${IMAGE_NAME}/server:${IMAGE_TAG:-latest}
+    image: ${IMAGE_NAME}-server:${IMAGE_TAG:-latest}
   client:
     build:
       context: .
@@ -23,7 +23,7 @@ services:
         platforms:
         - linux/amd64
         - linux/arm64
-    image: ${IMAGE_NAME}/client:${IMAGE_TAG:-latest}
+    image: ${IMAGE_NAME}-client:${IMAGE_TAG:-latest}
   agent:
     build:
       context: .
@@ -34,7 +34,7 @@ services:
         platforms:
         - linux/amd64
         - linux/arm64
-    image: ${IMAGE_NAME}/agent:${IMAGE_TAG:-latest}
+    image: ${IMAGE_NAME}-agent:${IMAGE_TAG:-latest}
   dev-agent:
     build:
       context: .
@@ -45,4 +45,4 @@ services:
         platforms:
         - linux/amd64
         - linux/arm64
-    image: ${IMAGE_NAME}/agent:${IMAGE_TAG:-latest}-dev
+    image: ${IMAGE_NAME}-agent:${IMAGE_TAG:-latest}-dev

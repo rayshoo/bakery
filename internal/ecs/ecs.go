@@ -1,8 +1,6 @@
 package ecs
 
 import (
-	"github.com/rayshoo/bakery/internal/config"
-	"github.com/rayshoo/bakery/internal/state"
 	"context"
 	"encoding/base64"
 	"encoding/json"
@@ -14,6 +12,9 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/rayshoo/bakery/internal/config"
+	"github.com/rayshoo/bakery/internal/state"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsecs "github.com/aws/aws-sdk-go-v2/service/ecs"

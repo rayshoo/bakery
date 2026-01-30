@@ -40,7 +40,7 @@ spec:
       serviceAccountName: build
       containers:
       - name: build
-        image: docker.io/rayshoo/bakery/server
+        image: docker.io/rayshoo/bakery-server
         ports:
         - containerPort: 3000
         env:

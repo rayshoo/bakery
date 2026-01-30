@@ -1,8 +1,6 @@
 package k8s
 
 import (
-	"github.com/rayshoo/bakery/internal/config"
-	"github.com/rayshoo/bakery/internal/state"
 	"context"
 	"encoding/base64"
 	"encoding/json"
@@ -11,6 +9,9 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/rayshoo/bakery/internal/config"
+	"github.com/rayshoo/bakery/internal/state"
 
 	batchv1 "k8s.io/api/batch/v1"
 	apiv1 "k8s.io/api/core/v1"

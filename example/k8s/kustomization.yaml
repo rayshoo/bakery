@@ -17,5 +17,5 @@ secretGenerator:
   envs:
   - .env
 images:
-- name: docker.io/rayshoo/bakery/server
+- name: docker.io/rayshoo/bakery-server
   newTag: v1.0.0
