@@ -1,0 +1,48 @@
+---
+version: '3.8'
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: deploy/container/server/Dockerfile
+      args:
+        VERSION: ${IMAGE_TAG:-latest}
+      x-bake:
+        platforms:
+        - linux/amd64
+        - linux/arm64
+    image: ${IMAGE_NAME}/server:${IMAGE_TAG:-latest}
+  client:
+    build:
+      context: .
+      dockerfile: deploy/container/client/Dockerfile
+      args:
+        VERSION: ${IMAGE_TAG:-latest}
+      x-bake:
+        platforms:
+        - linux/amd64
+        - linux/arm64
+    image: ${IMAGE_NAME}/client:${IMAGE_TAG:-latest}
+  agent:
+    build:
+      context: .
+      dockerfile: deploy/container/agent/Dockerfile
+      args:
+        VERSION: ${IMAGE_TAG:-latest}
+      x-bake:
+        platforms:
+        - linux/amd64
+        - linux/arm64
+    image: ${IMAGE_NAME}/agent:${IMAGE_TAG:-latest}
+  dev-agent:
+    build:
+      context: .
+      dockerfile: deploy/container/agent/dev.Dockerfile
+      args:
+        VERSION: ${IMAGE_TAG:-latest}-dev
+      x-bake:
+        platforms:
+        - linux/amd64
+        - linux/arm64
+    image: ${IMAGE_NAME}/agent:${IMAGE_TAG:-latest}-dev

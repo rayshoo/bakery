@@ -1,0 +1,25 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: build
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-request-buffering: off
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: internal-nginx
+  tls:
+  - hosts:
+    - <host>
+    secretName: <host>
+  rules:
+  - host: <host>
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: build
+            port:
+              number: 3000

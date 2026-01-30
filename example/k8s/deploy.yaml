@@ -1,0 +1,89 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: build
+  annotations:
+    reloader.stakater.com/auto: 'true'
+  name: build
+spec:
+  replicas: 1
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app: build
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: build
+    spec:
+      # nodeSelector:
+      #   <key>: <value>
+      # tolerations:
+      # - key: <key>
+      #   operator: Equal
+      #   value: <value>
+      #   effect: NoSchedule
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: kubernetes.io/hostname
+            labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - build
+      serviceAccountName: build
+      containers:
+      - name: build
+        image: docker.io/rayshoo/bakery/server
+        ports:
+        - containerPort: 3000
+        env:
+        - name: K8S_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: K8S_CONFIG_PATH
+          value: /config.yaml
+        envFrom:
+        - secretRef:
+            name: build
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          timeoutSeconds: 3
+          periodSeconds: 3
+          failureThreshold: 5
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          timeoutSeconds: 3
+          periodSeconds: 3
+          failureThreshold: 3
+        volumeMounts:
+        - name: config
+          mountPath: /config.yaml
+          subPath: config.yaml
+        - name: multi-arch-push-credential
+          mountPath: /root/.docker/config.json
+          subPath: config.json
+          readOnly: true
+      # imagePullSecrets:
+      # - name: <name>
+      volumes:
+      - name: config
+        configMap:
+          name: build
+      - name: multi-arch-push-credential
+        secret:
+          secretName: registry-credential
+          items:
+            - key: config.json
+              path: config.json

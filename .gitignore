@@ -1,0 +1,11 @@
+.idea/
+.claude/
+build/
+
+*.exe
+.env
+config.yaml
+test.env
+test.yaml
+client-config.yaml
+server-config.yaml

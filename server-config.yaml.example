@@ -1,0 +1,10 @@
+k8s:
+  serviceAccountName: build-agent
+  nodeSelector:
+    node: build
+  tolerations:
+  - effect: NoSchedule
+    key: karpenter/node.build
+    operator: Exists
+  imagePullSecrets:
+  - name: registry-credential
