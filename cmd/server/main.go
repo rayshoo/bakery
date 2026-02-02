@@ -63,7 +63,7 @@ func main() {
 	_ = godotenv.Load(".env")
 
 	awsRegion := getenv("AWS_REGION", "ap-northeast-2")
-	clusterName := getenv("ECS_CLUSTER", "build-cluster")
+	clusterName := getenv("ECS_CLUSTER", "bakery-cluster")
 
 	log.Println("[main] starting build controller...")
 	log.Println("[main] AWS_REGION =", awsRegion)
@@ -214,7 +214,7 @@ func main() {
 func cleanupECSTaskDefinitions(ctx context.Context, ecsClient *ecs.Client) error {
 	log.Println("[cleanup] Starting ECS task definition cleanup...")
 
-	familyPrefix := getenv("AGENT_TASK_FAMILY", "build-agent")
+	familyPrefix := getenv("AGENT_TASK_FAMILY", "bakery-agent")
 
 	log.Printf("[cleanup] Looking for task definitions with family prefix: %s", familyPrefix)
 

@@ -263,14 +263,14 @@ S3_ENDPOINT=s3.amazonaws.com
 S3_REGION=ap-northeast-2
 S3_BUCKET=my-build-bucket
 S3_SSL=true
-CONTROLLER_URL=https://build.example.com
+CONTROLLER_URL=https://bakery.example.com
 AWS_REGION=ap-northeast-2
-ECS_CLUSTER=build-cluster
+ECS_CLUSTER=bakery-cluster
 ECS_SUBNETS=subnet-xxx,subnet-yyy
 ECS_SECURITY_GROUPS=sg-xxx
-ECS_EXEC_ROLE_ARN=arn:aws:iam::<account-id>:role/build-agent-execution
-ECS_TASK_ROLE_ARN=arn:aws:iam::<account-id>:role/build-agent-task
-AGENT_IMAGE=docker.io/rayshoo/bakery-agent:v1.0.1
+ECS_EXEC_ROLE_ARN=arn:aws:iam::<account-id>:role/bakery-agent-execution
+ECS_TASK_ROLE_ARN=arn:aws:iam::<account-id>:role/bakery-agent-task
+AGENT_IMAGE=docker.io/rayshoo/bakery-agent:v1.0.2
 CLEANUP_ECS_TASK_DEFINITIONS=true
 ```
 

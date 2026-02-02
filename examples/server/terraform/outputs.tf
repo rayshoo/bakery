@@ -7,13 +7,13 @@ output "cluster_arn" {
 }
 
 output "execution_role_arn" {
-  value = aws_iam_role.build_agent_execution_role.arn
+  value = aws_iam_role.bakery_agent_execution_role.arn
 }
 
 output "task_role_arn" {
-  value = try(aws_iam_role.build_agent_task_role["this"].arn, null)
+  value = try(aws_iam_role.bakery_agent_task_role["this"].arn, null)
 }
 
 output "security_group_id" {
-  value = aws_security_group.build_agent.id
+  value = aws_security_group.bakery_agent.id
 }

@@ -129,7 +129,7 @@ func (e *ECSExecutor) EnsureTaskDefinitionForArch(ctx context.Context, arch stri
 		return "", err
 	}
 
-	family := fmt.Sprintf("%s-%s-%s-%s", getenv("AGENT_TASK_FAMILY", "build-agent"), arch, cpuNorm, memNorm)
+	family := fmt.Sprintf("%s-%s-%s-%s", getenv("AGENT_TASK_FAMILY", "bakery-agent"), arch, cpuNorm, memNorm)
 
 	e.taskDefMu.Lock()
 	defer e.taskDefMu.Unlock()

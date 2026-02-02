@@ -23,7 +23,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: docker.io/rayshoo/bakery-client:v1.0.1
+      image: docker.io/rayshoo/bakery-client:v1.0.2
     steps:
     - uses: actions/checkout@v4
 

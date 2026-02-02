@@ -1,5 +1,5 @@
 k8s:
-  serviceAccountName: build-agent
+  serviceAccountName: bakery-agent
   nodeSelector:
     node: build
   tolerations:

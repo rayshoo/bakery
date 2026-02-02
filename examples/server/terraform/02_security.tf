@@ -1,6 +1,6 @@
-resource "aws_security_group" "build_agent" {
-  name = coalesce(var.build_agent_security_group_name, "build-agent")
-  description = "build agent security group"
+resource "aws_security_group" "bakery_agent" {
+  name = coalesce(var.bakery_agent_security_group_name, "bakery-agent")
+  description = "bakery agent security group"
   vpc_id      = var.vpc_id
 
   egress {
@@ -11,6 +11,6 @@ resource "aws_security_group" "build_agent" {
   }
 
   tags = {
-    Name = "build-agent"
+    Name = "bakery-agent"
   }
 }

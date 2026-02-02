@@ -31,7 +31,7 @@ stages:
 .buildTemplate: &buildTemplate
   stage: build
   image:
-    name: docker.io/rayshoo/bakery-client:v1.0.1
+    name: docker.io/rayshoo/bakery-client:v1.0.2
     entrypoint: [""]
   script:
   - |
