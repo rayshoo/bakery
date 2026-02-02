@@ -321,13 +321,6 @@ bakery-client \
 
 When `--config` and `--compose` are used together, the global settings from config.yaml serve as the base and compose service settings are merged on top.
 
-### Container Image Build
-
-```bash
-# Build all service images (bakery-server, bakery-client, bakery-agent) and push to registry
-make bake
-```
-
 ## Build Flow
 
 1. Client compresses source code into tar.gz and uploads to S3
@@ -338,3 +331,10 @@ make bake
 6. Agent streams build logs to the Server in real-time
 7. Client receives logs from the Server via streaming
 8. On completion, the image is pushed to the specified registry
+
+## Container Image Build
+
+```bash
+# Build all service images (bakery-server, bakery-client, bakery-agent) and push to registry
+make bake
+```

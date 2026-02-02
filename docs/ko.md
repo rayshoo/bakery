@@ -321,13 +321,6 @@ bakery-client \
 
 `--config`와 `--compose`를 함께 사용하면, config.yaml의 global 설정이 base로 적용되고 compose 파일의 서비스별 설정이 merge됩니다.
 
-### 컨테이너 이미지 빌드
-
-```bash
-# 전체 서비스 이미지 빌드 (bakery-server, bakery-client, bakery-agent) 후 레지스트리에 push
-make bake
-```
-
 ## 빌드 흐름
 
 1. Client가 소스코드를 tar.gz로 압축하여 S3에 업로드합니다
@@ -338,3 +331,10 @@ make bake
 6. Agent가 빌드 로그를 실시간으로 Server에 전송합니다
 7. Client가 Server에서 로그를 스트리밍으로 수신합니다
 8. 빌드 완료 후 이미지가 지정된 레지스트리에 push됩니다
+
+## 컨테이너 이미지 빌드
+
+```bash
+# 전체 서비스 이미지 빌드 (bakery-server, bakery-client, bakery-agent) 후 레지스트리에 push
+make bake
+```
