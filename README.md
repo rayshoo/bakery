@@ -1,4 +1,4 @@
-![Bakery Banner](assets/banner.png)
+![Bakery Banner](assets/logo.png)
 
 # Bakery
 
