@@ -326,9 +326,6 @@ bakery-client \
 ```bash
 # 전체 서비스 이미지 빌드 (bakery-server, bakery-client, bakery-agent) 후 레지스트리에 push
 make bake
-
-# Agent 이미지만 빌드
-make agent
 ```
 
 ## 빌드 흐름

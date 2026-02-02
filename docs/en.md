@@ -326,9 +326,6 @@ When `--config` and `--compose` are used together, the global settings from conf
 ```bash
 # Build all service images (bakery-server, bakery-client, bakery-agent) and push to registry
 make bake
-
-# Build agent image only
-make agent
 ```
 
 ## Build Flow
