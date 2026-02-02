@@ -2,7 +2,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: build
+  name: bakery
 rules:
 - apiGroups:
   - ""
@@ -30,7 +30,7 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: build-agent
+  name: bakery-agent
 rules:
 - apiGroups:
   - ""

@@ -1,0 +1,88 @@
+name: Build and Push Image
+
+on:
+  push:
+    branches: [main, master]
+  release:
+    types: [created]
+
+env:
+  S3_ENDPOINT: s3.amazonaws.com
+  S3_REGION: us-west-1
+  S3_BUCKET: bakery
+  S3_SSL: "true"
+  CONTROLLER_URL: https://bakery.example.com
+  LOG_FORMAT: simple
+  BUILD_CPU: "1"
+  BUILD_MEMORY: 5G
+  CONTEXT: "."
+  DOCKERFILE: Dockerfile
+  CACHE_ENABLE: "true"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: docker.io/rayshoo/bakery-client:v1.0.1
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set image tag
+      id: meta
+      run: |
+        if [ "${{ github.event_name }}" = "release" ]; then
+          echo "tag=${{ github.event.release.tag_name }}" >> "$GITHUB_OUTPUT"
+        else
+          echo "tag=$(echo ${{ github.sha }} | cut -c1-8)" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Generate build config
+      env:
+        IMAGE_NAME: ghcr.io/${{ github.repository }}
+        IMAGE_TAG: ${{ steps.meta.outputs.tag }}
+        REGISTRY_USER: ${{ github.actor }}
+        REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+        CACHE_REGISTRY_USER: ${{ secrets.CACHE_REGISTRY_USER }}
+        CACHE_REGISTRY_PASSWORD: ${{ secrets.CACHE_REGISTRY_PASSWORD }}
+        S3_ACCESS_KEY: ${{ secrets.S3_ACCESS_KEY }}
+        S3_SECRET_KEY: ${{ secrets.S3_SECRET_KEY }}
+      run: |
+        cat > .env << EOF
+        VERSION=${IMAGE_TAG}
+        EOF
+
+        cat >> /config.yaml <<EOF
+        global:
+          platform: ecs
+          cpu: ${BUILD_CPU}
+          memory: ${BUILD_MEMORY}
+          kaniko-credentials:
+          - registry: ghcr.io
+            username: ${REGISTRY_USER}
+            password: ${REGISTRY_PASSWORD}
+          - registry: cache.example.com
+            username: ${CACHE_REGISTRY_USER}
+            password: ${CACHE_REGISTRY_PASSWORD}
+          kaniko:
+            context-path: ${CONTEXT}
+            dockerfile: ${DOCKERFILE}
+            cache:
+              enable: ${CACHE_ENABLE}
+              repo: cache.example.com/${{ github.repository }}
+              ttl: 24h
+            snapshot-mode: redo
+            use-new-run: true
+            cleanup: true
+            destination: ${IMAGE_NAME}:${IMAGE_TAG}
+        bake:
+        - arch: amd64
+        - arch: arm64
+        EOF
+
+    - name: Build and push image
+      env:
+        S3_ACCESS_KEY: ${{ secrets.S3_ACCESS_KEY }}
+        S3_SECRET_KEY: ${{ secrets.S3_SECRET_KEY }}
+      run: |
+        cat /config.yaml
+        bakery-client -config /config.yaml -repo ${{ github.workspace }}

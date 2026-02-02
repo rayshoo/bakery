@@ -16,5 +16,5 @@ go build  \
 
 FROM alpine:latest
 LABEL maintainer="rayshoo"
-COPY --from=builder /go/src/build/app /bin/build
-ENTRYPOINT ["/bin/build"]
+COPY --from=builder /go/src/build/app /bin/bakery-server
+ENTRYPOINT ["/bin/bakery-server"]

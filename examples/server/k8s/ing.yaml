@@ -2,7 +2,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: build
+  name: bakery
   annotations:
     nginx.ingress.kubernetes.io/proxy-request-buffering: off
     cert-manager.io/cluster-issuer: letsencrypt-prod
@@ -10,16 +10,16 @@ spec:
   ingressClassName: internal-nginx
   tls:
   - hosts:
-    - <host>
-    secretName: <host>
+    - bakery.example.com
+    secretName: bakery
   rules:
-  - host: <host>
+  - host: bakery.example.com
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: build
+            name: bakery
             port:
               number: 3000

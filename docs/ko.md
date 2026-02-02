@@ -105,7 +105,7 @@ global:
 
   # Kaniko 빌드 옵션
   kaniko:
-    context-path: /workspace/src
+    context-path: .
     dockerfile: Dockerfile
     destination: registry.example.com/myapp:latest
     build-args:
@@ -152,7 +152,7 @@ services:
 
 ## AWS ECS 설정
 
-ECS를 빌드 플랫폼으로 사용할 경우 아래의 AWS 리소스와 IAM 권한이 필요합니다. `example/terraform/`에 참고용 Terraform 구성이 포함되어 있습니다.
+ECS를 빌드 플랫폼으로 사용할 경우 아래의 AWS 리소스와 IAM 권한이 필요합니다. `examples/server/terraform/`에 참고용 Terraform 구성이 포함되어 있습니다.
 
 ### 인프라
 
@@ -236,12 +236,12 @@ Agent 보안 그룹은 아웃바운드 인터넷 액세스만 필요합니다. �
 
 ## Kubernetes 배포
 
-`example/k8s/`에 Kustomize 기반의 Controller Server 배포 예시가 포함되어 있습니다.
+`examples/server/k8s/`에 Kustomize 기반의 Controller Server 배포 예시가 포함되어 있습니다.
 
 ### 디렉토리 구조
 
 ```
-example/k8s/
+examples/server/k8s/
 ├── .env                  # Server 환경 변수 (Secret으로 생성)
 ├── configs/
 │   └── config.yaml       # K8s Agent 설정 (ConfigMap으로 생성)
@@ -270,7 +270,7 @@ ECS_SUBNETS=subnet-xxx,subnet-yyy
 ECS_SECURITY_GROUPS=sg-xxx
 ECS_EXEC_ROLE_ARN=arn:aws:iam::<account-id>:role/build-agent-execution
 ECS_TASK_ROLE_ARN=arn:aws:iam::<account-id>:role/build-agent-task
-AGENT_IMAGE=docker.io/rayshoo/bakery-agent:v1.0.0
+AGENT_IMAGE=docker.io/rayshoo/bakery-agent:v1.0.1
 CLEANUP_ECS_TASK_DEFINITIONS=true
 ```
 
@@ -278,7 +278,7 @@ CLEANUP_ECS_TASK_DEFINITIONS=true
 
 ```yaml
 secretGenerator:
-- name: build
+- name: bakery
   envs:
   - .env
 ```
@@ -286,28 +286,32 @@ secretGenerator:
 ### 배포
 
 ```bash
-kubectl apply -k example/k8s/
+kubectl apply -k examples/server/k8s/
 ```
 
 ## 사용법
 
-### 로컬 실행
+### 예시
 
-```bash
-# Server 실행
-make server
+배포 및 CI/CD 연동 예시가 `examples/` 아래에 준비되어 있습니다:
 
-# 단일 config.yaml로 빌드 요청
-make client
-
-# docker-compose.yaml로 빌드 요청 (비동기)
-make compose
 ```
+examples/
+├── server/                  # Server 배포 예시
+│   ├── k8s/                 # Kubernetes (Kustomize) 매니페스트
+│   └── terraform/           # AWS ECS 인프라 (Terraform)
+└── client/                  # Client CI/CD 연동 예시
+    ├── .github-actions.yml  # GitHub Actions 워크플로우
+    └── .gitlab.yml          # GitLab CI/CD 파이프라인
+```
+
+- **Server**: `examples/server/`에서 Kubernetes 및 Terraform 기반 bakery-server 배포 예시를 확인할 수 있습니다.
+- **Client**: `examples/client/`에서 bakery-client를 사용해 컨테이너 이미지를 빌드하고 push하는 CI/CD 파이프라인 예시를 확인할 수 있습니다 (GitHub Actions, GitLab CI).
 
 ### Client CLI 옵션
 
 ```bash
-go run cmd/client/main.go \
+bakery-client \
   --config config.yaml \        # 빌드 설정 파일 (선택)
   --compose compose.yaml \      # docker-compose 파일 (선택)
   --services "app,worker" \     # 빌드할 서비스 필터 (선택, 비워두면 전체)
@@ -320,7 +324,7 @@ go run cmd/client/main.go \
 ### 컨테이너 이미지 빌드
 
 ```bash
-# 전체 서비스 이미지 빌드 (server, client, agent) 후 레지스트리에 push
+# 전체 서비스 이미지 빌드 (bakery-server, bakery-client, bakery-agent) 후 레지스트리에 push
 make bake
 
 # Agent 이미지만 빌드

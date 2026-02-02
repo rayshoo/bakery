@@ -16,5 +16,5 @@ go build  \
 
 FROM gcr.io/kaniko-project/executor:v1.24.0-debug
 LABEL maintainer="rayshoo"
-COPY --from=builder /go/src/build/app /busybox/build
-ENTRYPOINT ["/busybox/build"]
+COPY --from=builder /go/src/build/app /busybox/bakery-agent
+ENTRYPOINT ["/busybox/bakery-agent"]

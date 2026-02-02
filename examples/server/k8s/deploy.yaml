@@ -3,22 +3,22 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: build
+    app: bakery
   annotations:
     reloader.stakater.com/auto: 'true'
-  name: build
+  name: bakery
 spec:
   replicas: 1
   revisionHistoryLimit: 5
   selector:
     matchLabels:
-      app: build
+      app: bakery
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: build
+        app: bakery
     spec:
       # nodeSelector:
       #   <key>: <value>
@@ -36,10 +36,10 @@ spec:
               - key: app
                 operator: In
                 values:
-                - build
-      serviceAccountName: build
+                - bakery
+      serviceAccountName: bakery
       containers:
-      - name: build
+      - name: bakery
         image: docker.io/rayshoo/bakery-server
         ports:
         - containerPort: 3000
@@ -52,7 +52,7 @@ spec:
           value: /config.yaml
         envFrom:
         - secretRef:
-            name: build
+            name: bakery
         livenessProbe:
           httpGet:
             path: /
@@ -80,7 +80,7 @@ spec:
       volumes:
       - name: config
         configMap:
-          name: build
+          name: bakery
       - name: multi-arch-push-credential
         secret:
           secretName: registry-credential

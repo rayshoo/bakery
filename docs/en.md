@@ -105,7 +105,7 @@ global:
 
   # Kaniko build options
   kaniko:
-    context-path: /workspace/src
+    context-path: .
     dockerfile: Dockerfile
     destination: registry.example.com/myapp:latest
     build-args:
@@ -152,7 +152,7 @@ services:
 
 ## AWS ECS Setup
 
-When using ECS as the build platform, the following AWS resources and IAM permissions are required. A reference Terraform configuration is available in `example/terraform/`.
+When using ECS as the build platform, the following AWS resources and IAM permissions are required. A reference Terraform configuration is available in `examples/server/terraform/`.
 
 ### Infrastructure
 
@@ -236,12 +236,12 @@ The Agent security group requires outbound internet access only. No inbound rule
 
 ## Kubernetes Deployment
 
-A Kustomize-based example for deploying the Controller Server is available in `example/k8s/`.
+A Kustomize-based example for deploying the Controller Server is available in `examples/server/k8s/`.
 
 ### Directory Structure
 
 ```
-example/k8s/
+examples/server/k8s/
 ├── .env                  # Server environment variables (created as Secret)
 ├── configs/
 │   └── config.yaml       # K8s Agent config (created as ConfigMap)
@@ -270,7 +270,7 @@ ECS_SUBNETS=subnet-xxx,subnet-yyy
 ECS_SECURITY_GROUPS=sg-xxx
 ECS_EXEC_ROLE_ARN=arn:aws:iam::<account-id>:role/build-agent-execution
 ECS_TASK_ROLE_ARN=arn:aws:iam::<account-id>:role/build-agent-task
-AGENT_IMAGE=docker.io/rayshoo/bakery-agent:v1.0.0
+AGENT_IMAGE=docker.io/rayshoo/bakery-agent:v1.0.1
 CLEANUP_ECS_TASK_DEFINITIONS=true
 ```
 
@@ -278,7 +278,7 @@ In `kustomization.yaml`, this file is referenced via `secretGenerator`:
 
 ```yaml
 secretGenerator:
-- name: build
+- name: bakery
   envs:
   - .env
 ```
@@ -286,28 +286,32 @@ secretGenerator:
 ### Deploy
 
 ```bash
-kubectl apply -k example/k8s/
+kubectl apply -k examples/server/k8s/
 ```
 
 ## Usage
 
-### Local Execution
+### Examples
 
-```bash
-# Run the Server
-make server
+Deployment and CI/CD integration examples are available under `examples/`:
 
-# Submit a build with config.yaml
-make client
-
-# Submit a build with docker-compose.yaml (async)
-make compose
 ```
+examples/
+├── server/                  # Server deployment examples
+│   ├── k8s/                 # Kubernetes (Kustomize) manifests
+│   └── terraform/           # AWS ECS infrastructure (Terraform)
+└── client/                  # Client CI/CD integration examples
+    ├── .github-actions.yml  # GitHub Actions workflow
+    └── .gitlab.yml          # GitLab CI/CD pipeline
+```
+
+- **Server**: See `examples/server/` for Kubernetes and Terraform-based deployment of the bakery-server.
+- **Client**: See `examples/client/` for CI/CD pipeline examples that use bakery-client to build and push container images (GitHub Actions, GitLab CI).
 
 ### Client CLI Options
 
 ```bash
-go run cmd/client/main.go \
+bakery-client \
   --config config.yaml \        # Build config file (optional)
   --compose compose.yaml \      # docker-compose file (optional)
   --services "app,worker" \     # Services to build (optional, empty = all)
@@ -320,7 +324,7 @@ When `--config` and `--compose` are used together, the global settings from conf
 ### Container Image Build
 
 ```bash
-# Build all service images (server, client, agent) and push to registry
+# Build all service images (bakery-server, bakery-client, bakery-agent) and push to registry
 make bake
 
 # Build agent image only

@@ -27,8 +27,8 @@ global:
     password: password
 
   kaniko:
-    # Server default, but can be explicitly overridden
-    context-path: /workspace/src
+    # Relative to /workspace (default cmd.dir). Defaults to '.'
+    context-path: .
     # Server default, but can be explicitly overridden
     dockerfile: Dockerfile
     build-args:

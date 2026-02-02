@@ -9,13 +9,13 @@ resources:
 - svc.yaml
 - ing.yaml
 configMapGenerator:
-- name: build
+- name: bakery
   files:
   - configs/config.yaml
 secretGenerator:
-- name: build
+- name: bakery
   envs:
   - .env
 images:
 - name: docker.io/rayshoo/bakery-server
-  newTag: v1.0.0
+  newTag: v1.0.1
