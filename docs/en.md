@@ -1,16 +1,17 @@
 # Bakery
 
-A distributed container image build system. Builds container images using Kaniko without Docker-in-Docker, and runs multi-architecture (amd64, arm64) builds in parallel on AWS ECS or Kubernetes.
+A distributed build system for on-demand multi-architecture (amd64, arm64) container image builds. Build containers run only when a build is requested on AWS ECS Fargate or Kubernetes, and are automatically cleaned up after completion.
 
 ## Background
 
-Building container images in CI/CD typically requires Docker-in-Docker (DinD) or a Docker daemon on the build machine. This introduces privileged mode requirements, security concerns, and resource waste.
+In CI/CD environments, maintaining always-on build instances to handle unpredictable build triggers is a waste of cost. Additionally, EKS Fargate does not support arm64, forcing multi-architecture builds to rely on QEMU emulation — which is slow and unstable.
 
-This project addresses these problems:
+This project was created to solve these problems:
 
-- **No DinD**: Uses Kaniko to build images without a Docker daemon. No privileged mode needed.
-- **Multi-architecture builds**: Builds amd64 and arm64 images natively in parallel — no QEMU emulation.
+- **On-demand builds**: Build containers run on ECS Fargate or K8s only when a build is requested. No always-on instances needed, making it cost-efficient.
+- **Native multi-architecture builds**: Builds amd64 and arm64 images natively in parallel on their respective architectures. Fast and stable without QEMU emulation.
 - **Separated build infrastructure**: Offloads build tasks to ECS or Kubernetes, freeing CI runner resources and allowing independent scaling.
+- **No DinD**: Uses Kaniko to build images without a Docker daemon. No privileged mode needed.
 - **docker-compose.yaml compatible**: Use your existing docker-compose.yaml to configure multi-service builds.
 
 ## Architecture
